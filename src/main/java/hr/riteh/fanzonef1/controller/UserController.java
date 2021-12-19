@@ -1,12 +1,12 @@
 package hr.riteh.fanzonef1.controller;
 
+import hr.riteh.fanzonef1.dto.request.CreateUserDto;
+import hr.riteh.fanzonef1.dto.response.ResponseMessageDto;
 import hr.riteh.fanzonef1.dto.response.UserStandingsResponseDto;
 import hr.riteh.fanzonef1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -26,6 +26,16 @@ public class UserController {
     public ResponseEntity<List<UserStandingsResponseDto>> getStandings(){
         List<UserStandingsResponseDto> standingsList = userService.getUserStandings();
         return new ResponseEntity<>(standingsList, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/create")
+    public ResponseEntity<ResponseMessageDto> createUser(CreateUserDto userDto){
+        ResponseMessageDto message = userService.createUser(userDto);
+        if(message.isSuccess()){
+            return new ResponseEntity<>(message, HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

@@ -13,15 +13,22 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class User {
 
+    public User(String username, String email, String password, String dateOfBirth){
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.dateOfBirth = dateOfBirth;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private long id;
 
-    @Column(name="username",nullable = false)
+    @Column(name="username",nullable = false, unique = true)
     private String username;
 
-    @Column(name="email")
+    @Column(name="email", nullable = false, unique = true)
     private String email;
 
     @Column(name="password", nullable = false)
@@ -31,5 +38,5 @@ public class User {
     private String dateOfBirth;
 
     @Column(name="points")
-    private int points;
+    private int points = 0;
 }

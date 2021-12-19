@@ -1,5 +1,7 @@
 package hr.riteh.fanzonef1.service;
 
+import hr.riteh.fanzonef1.dto.request.CreateUserDto;
+import hr.riteh.fanzonef1.dto.response.ResponseMessageDto;
 import hr.riteh.fanzonef1.dto.response.UserStandingsResponseDto;
 import hr.riteh.fanzonef1.entity.User;
 import hr.riteh.fanzonef1.repository.UserRepository;
@@ -27,5 +29,18 @@ public class UserService {
             standingsDtoList.add(DtoMapper.mapUserToUserStandingsResponseDto(user));
         }
         return standingsDtoList;
+    }
+
+    public ResponseMessageDto createUser(CreateUserDto userDto){
+        if(userRepository.findByUsername(userDto.getUsername()).isEmpty()){
+            return new ResponseMessageDto(false, "Username already exists!");
+        }
+        User user = new User(userDto.getUsername(),userDto.getEmail(),userDto.getPassword(),userDto.getDateOfBirth());
+        boolean success = userRepository.saveUser(user);
+        if(success){
+            return new ResponseMessageDto(true, "User created.");
+        }else{
+            return new ResponseMessageDto(false, "Failed saving user to database");
+        }
     }
 }
