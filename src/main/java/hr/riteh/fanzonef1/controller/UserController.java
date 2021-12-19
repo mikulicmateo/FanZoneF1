@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<ResponseMessageDto> createUser(CreateUserDto userDto){
+    public ResponseEntity<ResponseMessageDto> createUser(@RequestBody CreateUserDto userDto){
         ResponseMessageDto message = userService.createUser(userDto);
         if(message.isSuccess()){
             return new ResponseEntity<>(message, HttpStatus.CREATED);

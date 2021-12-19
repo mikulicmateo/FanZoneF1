@@ -8,11 +8,13 @@ import hr.riteh.fanzonef1.repository.UserRepository;
 import hr.riteh.fanzonef1.util.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -32,12 +34,12 @@ public class UserService {
     }
 
     public ResponseMessageDto createUser(CreateUserDto userDto){
-        if(userRepository.findByUsername(userDto.getUsername()).isEmpty()){
+        if(userRepository.findByUsername(userDto.getUsername()).isPresent()){
             return new ResponseMessageDto(false, "Username already exists!");
         }
         User user = new User(userDto.getUsername(),userDto.getEmail(),userDto.getPassword(),userDto.getDateOfBirth());
-        boolean success = userRepository.saveUser(user);
-        if(success){
+        User savedUser = userRepository.save(user);
+        if(savedUser != null){
             return new ResponseMessageDto(true, "User created.");
         }else{
             return new ResponseMessageDto(false, "Failed saving user to database");
