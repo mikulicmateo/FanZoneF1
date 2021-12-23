@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="user_table")
@@ -39,4 +40,7 @@ public class User {
 
     @Column(name="points")
     private int points = 0;
+
+    @OneToMany(mappedBy = "user")
+    private List<Vote> votes;
 }

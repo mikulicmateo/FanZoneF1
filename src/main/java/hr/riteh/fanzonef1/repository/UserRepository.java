@@ -15,5 +15,4 @@ public interface UserRepository extends CrudRepository<User,Long> {
     Optional<User> findByEmail(String email);
     List<User> findAllByOrderByPointsDesc();
     User save(User user);
-    User update(User user);
 }

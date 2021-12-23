@@ -67,7 +67,7 @@ public class UserService {
         }
         user.setPassword(userDto.getNewPassword());
 
-        if(userRepository.update(user) != null){
+        if(userRepository.save(user) != null){
             return new ResponseMessageDto(true, "User has been updated!");
         }else{
             return new ResponseMessageDto(false, "Couldn't update user in database!");
