@@ -27,6 +27,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public Optional<User> getUserByUsername(String username){
+        return userRepository.findByUsername(username);
+    }
+
     public List<UserStandingsResponseDto> getUserStandings(){
         List<User> users = userRepository.findAllByOrderByPointsDesc();
         List<UserStandingsResponseDto> standingsDtoList = new ArrayList<>();
@@ -37,7 +41,7 @@ public class UserService {
     }
 
     public ResponseMessageDto createUser(CreateUserDto userDto){
-        if(userRepository.findByUsername(userDto.getUsername()).isPresent()){
+        if(getUserByUsername(userDto.getUsername()).isPresent()){
             return new ResponseMessageDto(false, "Username already exists!");
         }
         User user = new User(userDto.getUsername(),userDto.getEmail(),userDto.getPassword(),userDto.getDateOfBirth());
@@ -50,7 +54,7 @@ public class UserService {
     }
 
     public ResponseMessageDto updateUser(UpdateUserDto userDto){
-        Optional<User> userOptional = userRepository.findByUsername(userDto.getUsername());
+        Optional<User> userOptional = getUserByUsername(userDto.getUsername());
         if(userOptional.isEmpty()){
             return new ResponseMessageDto(false, "User doesn't exist!");
         }
@@ -75,7 +79,7 @@ public class UserService {
     }
 
     public ResponseMessageDto deleteUser(DeleteUserDto userDto) {
-        Optional<User> userOptional = userRepository.findByUsername(userDto.getUsername());
+        Optional<User> userOptional = getUserByUsername(userDto.getUsername());
         if(userOptional.isEmpty()){
             return new ResponseMessageDto(false, "User doesn't exist!");
         }
