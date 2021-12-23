@@ -1,6 +1,8 @@
 package hr.riteh.fanzonef1.service;
 
 import hr.riteh.fanzonef1.dto.request.CreateUserDto;
+import hr.riteh.fanzonef1.dto.request.DeleteUserDto;
+import hr.riteh.fanzonef1.dto.request.UpdateUserDto;
 import hr.riteh.fanzonef1.dto.response.ResponseMessageDto;
 import hr.riteh.fanzonef1.dto.response.UserStandingsResponseDto;
 import hr.riteh.fanzonef1.entity.User;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -44,5 +47,47 @@ public class UserService {
         }else{
             return new ResponseMessageDto(false, "Failed saving user to database");
         }
+    }
+
+    public ResponseMessageDto updateUser(UpdateUserDto userDto){
+        Optional<User> userOptional = userRepository.findByUsername(userDto.getUsername());
+        if(userOptional.isEmpty()){
+            return new ResponseMessageDto(false, "User doesn't exist!");
+        }
+
+        User user = userOptional.get();
+        if(!userDto.getNewPassword().equals(userDto.getConfirmNewPassword())){
+            return new ResponseMessageDto(false, "Passwords don't match!");
+        }
+        if(!userDto.getEmail().equals(user.getEmail())){
+            if(userRepository.findByEmail(userDto.getEmail()).isPresent()){
+                return new ResponseMessageDto(false, "Email is already registered!");
+            }
+            user.setEmail(userDto.getEmail());
+        }
+        user.setPassword(userDto.getNewPassword());
+
+        if(userRepository.update(user) != null){
+            return new ResponseMessageDto(true, "User has been updated!");
+        }else{
+            return new ResponseMessageDto(false, "Couldn't update user in database!");
+        }
+    }
+
+    public ResponseMessageDto deleteUser(DeleteUserDto userDto) {
+        Optional<User> userOptional = userRepository.findByUsername(userDto.getUsername());
+        if(userOptional.isEmpty()){
+            return new ResponseMessageDto(false, "User doesn't exist!");
+        }
+        User user = userOptional.get();
+        if(!userDto.getEmail().equals(user.getEmail())){
+            return new ResponseMessageDto(false, "Wrong email address!");
+        }
+        if(!userDto.getPassword().equals(user.getPassword())){
+            return new ResponseMessageDto(false,"Wrong password!");
+        }
+
+        userRepository.delete(user);
+        return new ResponseMessageDto(true, "User has been deleted!");
     }
 }

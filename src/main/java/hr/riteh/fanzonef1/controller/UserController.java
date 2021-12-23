@@ -1,6 +1,8 @@
 package hr.riteh.fanzonef1.controller;
 
 import hr.riteh.fanzonef1.dto.request.CreateUserDto;
+import hr.riteh.fanzonef1.dto.request.DeleteUserDto;
+import hr.riteh.fanzonef1.dto.request.UpdateUserDto;
 import hr.riteh.fanzonef1.dto.response.ResponseMessageDto;
 import hr.riteh.fanzonef1.dto.response.UserStandingsResponseDto;
 import hr.riteh.fanzonef1.service.UserService;
@@ -35,6 +37,26 @@ public class UserController {
             return new ResponseEntity<>(message, HttpStatus.CREATED);
         }else{
             return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(path="/update")
+    public ResponseEntity<ResponseMessageDto> updateUser(@RequestBody UpdateUserDto userDto){
+        ResponseMessageDto message = userService.updateUser(userDto);
+        if(message.isSuccess()){
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping(path="/delete")
+    public ResponseEntity<ResponseMessageDto> deleteUser(@RequestBody DeleteUserDto userDto){
+        ResponseMessageDto message = userService.deleteUser(userDto);
+        if(message.isSuccess()){
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
     }
 
