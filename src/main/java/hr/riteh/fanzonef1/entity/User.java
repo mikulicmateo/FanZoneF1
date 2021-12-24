@@ -41,6 +41,6 @@ public class User {
     @Column(name="points")
     private int points = 0;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vote> votes;
 }

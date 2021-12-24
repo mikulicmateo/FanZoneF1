@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,5 +43,12 @@ public class VoteService {
         return new ResponseMessageDto(true, "Voted successfully.");
     }
 
+    public void deleteVoteFromUser(User user) {
+        voteRepository.deleteByUser(user);
+    }
     //TODO -> kako provjeriti i dodijeliti bodove za vote?
+
+    public List<Vote> getVotesByRaceAndSeason(int race, int season){
+        return voteRepository.findByRoundAndBySeason(race, season);
+    }
 }

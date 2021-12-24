@@ -94,4 +94,8 @@ public class UserService {
         userRepository.delete(user);
         return new ResponseMessageDto(true, "User has been deleted!");
     }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
 }
