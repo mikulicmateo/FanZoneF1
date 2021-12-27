@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "vote")
+@CrossOrigin
 public class VoteController {
 
     private final VoteService voteService;

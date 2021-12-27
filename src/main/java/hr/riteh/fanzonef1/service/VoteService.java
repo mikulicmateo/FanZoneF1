@@ -37,7 +37,7 @@ public class VoteService {
                 return new ResponseMessageDto(false, "Already voted.");
             }
         }
-        if(checkVote(voteDto)) return new ResponseMessageDto(false, "Vote format not correct");
+        if(!checkVote(voteDto)) return new ResponseMessageDto(false, "Vote format not correct");
         //TODO pozicije nisu jednake
         Vote vote = new Vote(voteDto.getFirst(), voteDto.getSecond(), voteDto.getThird(), season, race, user);
         voteRepository.save(vote);
