@@ -37,10 +37,19 @@ public class VoteService {
                 return new ResponseMessageDto(false, "Already voted.");
             }
         }
+        if(checkVote(voteDto)) return new ResponseMessageDto(false, "Vote format not correct");
         //TODO pozicije nisu jednake
         Vote vote = new Vote(voteDto.getFirst(), voteDto.getSecond(), voteDto.getThird(), season, race, user);
         voteRepository.save(vote);
         return new ResponseMessageDto(true, "Voted successfully.");
+    }
+
+    private boolean checkVote(VoteDto voteDto) {
+        if(voteDto == null) return false;
+        if(voteDto.getFirst() == 0 || voteDto.getSecond() == 0 || voteDto.getThird() == 0){
+            return false;
+        }
+        return true;
     }
 
     public void deleteVoteFromUser(User user) {
@@ -49,6 +58,6 @@ public class VoteService {
     //TODO -> kako provjeriti i dodijeliti bodove za vote?
 
     public List<Vote> getVotesByRaceAndSeason(int race, int season){
-        return voteRepository.findByRoundAndBySeason(race, season);
+        return voteRepository.findByRoundAndSeason(race, season);
     }
 }

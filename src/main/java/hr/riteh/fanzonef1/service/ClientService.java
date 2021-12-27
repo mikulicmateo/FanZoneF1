@@ -17,17 +17,25 @@ public class ClientService {
 
     public int seasonRaces(int season) {
         String result = restTemplate.getForObject(mainUrl + season + JSON_ADDON, String.class);
-        JSONObject jsonObject = new JSONObject(result);
-        return jsonObject.getInt("total");
+
+        JSONObject responseObject = new JSONObject(result);
+        JSONObject data = responseObject.getJSONObject("MRData");
+
+        return data.getInt("total");
     }
 
 
     public VoteDto getRaceWinners(int currentRaces, int currentSeason) {
         String result = restTemplate.getForObject(mainUrl + currentSeason + "/" + currentRaces + "/results" +JSON_ADDON, String.class);
-        JSONObject jsonObject = new JSONObject(result);
+        JSONObject responseObject = new JSONObject(result);
         VoteDto voteDto = new VoteDto();
-        JSONObject jsonObject1 = jsonObject.getJSONObject("RaceTable");
-        JSONArray resultArray = jsonObject1.getJSONArray("Results");
+
+        JSONObject data = responseObject.getJSONObject("MRData");
+        JSONObject raceTable = data.getJSONObject("RaceTable");
+        JSONArray races = raceTable.getJSONArray("Races"); // races ---> in this case only 1
+        JSONObject raceResult = races.getJSONObject(0); // this race
+        JSONArray resultArray = raceResult.getJSONArray("Results"); //result array
+
         JSONObject first = resultArray.getJSONObject(0);
         JSONObject second = resultArray.getJSONObject(1);
         JSONObject third = resultArray.getJSONObject(2);

@@ -12,5 +12,5 @@ public interface VoteRepository extends CrudRepository<Vote, Long> {
     Optional<Vote> findById(long id);
     List<Vote> findByUser(User user);
     void deleteByUser(User user);
-    List<Vote> findByRoundAndBySeason(int round, int season);
+    List<Vote> findByRoundAndSeason(int round, int season);
 }

@@ -33,16 +33,21 @@ public class ScoreUpdateScheduler {
         int totalRaces = clientService.seasonRaces(currentSeason);
 
         List<Vote> voteList = voteService.getVotesByRaceAndSeason(currentRaces, currentSeason);
-        if(voteList.isEmpty()) return;
+        if(voteList.isEmpty()){
+            seasonCheck(currentRaces, totalRaces);
+            return;
+        }
         VoteDto winners = clientService.getRaceWinners(currentRaces, currentSeason);
-
+        if(winners == null) return;
         for(Vote vote: voteList){
             int pointsToAward = 0;
             if(vote.getN1() == winners.getFirst()){
                 pointsToAward += 10;
-            }else if(vote.getN2() == winners.getSecond()){
+            }
+            if(vote.getN2() == winners.getSecond()){
                 pointsToAward += 8;
-            }else if(vote.getN3() == winners.getThird()){
+            }
+            if(vote.getN3() == winners.getThird()){
                 pointsToAward +=5;
             }
 
@@ -51,8 +56,6 @@ public class ScoreUpdateScheduler {
             user.setPoints(user.getPoints() + pointsToAward);
             userService.saveUser(user);
         }
-
-
         seasonCheck(currentRaces, totalRaces);
     }
 
