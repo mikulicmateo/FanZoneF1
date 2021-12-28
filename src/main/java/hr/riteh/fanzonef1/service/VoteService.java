@@ -1,10 +1,13 @@
 package hr.riteh.fanzonef1.service;
 
+import hr.riteh.fanzonef1.dto.request.CredentialsDto;
 import hr.riteh.fanzonef1.dto.request.VoteDto;
 import hr.riteh.fanzonef1.dto.response.ResponseMessageDto;
 import hr.riteh.fanzonef1.entity.User;
 import hr.riteh.fanzonef1.entity.Vote;
 import hr.riteh.fanzonef1.repository.VoteRepository;
+import hr.riteh.fanzonef1.util.Base64Helper;
+import hr.riteh.fanzonef1.util.ValidationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +29,13 @@ public class VoteService {
         this.voteRepository = voteRepository;
     }
 
-    public ResponseMessageDto vote(String username, int race, int season, VoteDto voteDto){
-        Optional<User> userOptional = userService.getUserByUsername(username); //TODO trebalo bi odradit login
+    public ResponseMessageDto vote(String authHeader, int race, int season, VoteDto voteDto){
+
+        CredentialsDto credentialsDto = Base64Helper.getDecodedUsernameAndPassword(authHeader);
+        if(!ValidationHelper.checkCredentialsDto(credentialsDto))
+            return new ResponseMessageDto(false, "No credentials provided");
+
+        Optional<User> userOptional = userService.getUserByUsername(credentialsDto.getUsername());
         if(userOptional.isEmpty()){
             return new ResponseMessageDto(false, "ERROR");
         }
@@ -37,19 +45,10 @@ public class VoteService {
                 return new ResponseMessageDto(false, "Already voted.");
             }
         }
-        if(!checkVote(voteDto)) return new ResponseMessageDto(false, "Vote format not correct");
-        //TODO pozicije nisu jednake
+        if(!ValidationHelper.checkVote(voteDto)) return new ResponseMessageDto(false, "Vote format not correct");
         Vote vote = new Vote(voteDto.getFirst(), voteDto.getSecond(), voteDto.getThird(), season, race, user);
         voteRepository.save(vote);
         return new ResponseMessageDto(true, "Voted successfully.");
-    }
-
-    private boolean checkVote(VoteDto voteDto) {
-        if(voteDto == null) return false;
-        if(voteDto.getFirst() == 0 || voteDto.getSecond() == 0 || voteDto.getThird() == 0){
-            return false;
-        }
-        return true;
     }
 
     public void deleteVoteFromUser(User user) {

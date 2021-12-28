@@ -7,8 +7,15 @@ import hr.riteh.fanzonef1.dto.response.ResponseMessageDto;
 import hr.riteh.fanzonef1.dto.response.UserStandingsResponseDto;
 import hr.riteh.fanzonef1.entity.User;
 import hr.riteh.fanzonef1.repository.UserRepository;
+import hr.riteh.fanzonef1.security.UserPrincipal;
 import hr.riteh.fanzonef1.util.DtoMapper;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,13 +25,15 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Optional<User> getUserByUsername(String username){
@@ -44,7 +53,7 @@ public class UserService {
         if(getUserByUsername(userDto.getUsername()).isPresent()){
             return new ResponseMessageDto(false, "Username already exists!");
         }
-        User user = new User(userDto.getUsername(),userDto.getEmail(),userDto.getPassword(),userDto.getDateOfBirth());
+        User user = new User(userDto.getUsername(),userDto.getEmail(),passwordEncoder.encode(userDto.getPassword()),userDto.getDateOfBirth());
         User savedUser = userRepository.save(user);
         if(savedUser != null){
             return new ResponseMessageDto(true, "User created.");
@@ -97,5 +106,13 @@ public class UserService {
 
     public void saveUser(User user) {
         userRepository.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isPresent()) return new UserPrincipal(user.get());
+
+        throw new UsernameNotFoundException(username);
     }
 }

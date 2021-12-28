@@ -21,9 +21,9 @@ public class VoteController {
     }
 
     @PostMapping(path = "{season}/{race}")
-    public ResponseEntity<ResponseMessageDto> vote(@RequestHeader("username") String username, @PathVariable int race,
+    public ResponseEntity<ResponseMessageDto> vote(@RequestHeader(value = "Authorization") String authHeader, @PathVariable int race,
                                                    @PathVariable int season, @RequestBody VoteDto voteDto){
-        ResponseMessageDto message = voteService.vote(username, race, season, voteDto);
+        ResponseMessageDto message = voteService.vote(authHeader, race, season, voteDto);
         if(message.isSuccess()){
             return new ResponseEntity<>(message, HttpStatus.CREATED);
         }else{
