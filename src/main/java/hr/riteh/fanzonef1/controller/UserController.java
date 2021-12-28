@@ -31,6 +31,11 @@ public class UserController {
         return new ResponseEntity<>(standingsList, HttpStatus.OK);
     }
 
+    @PostMapping(path = "/login")
+    public ResponseEntity<ResponseMessageDto> login(@RequestHeader(value = "Authorization") String authHeader){
+        return new ResponseEntity<>(new ResponseMessageDto(true, "Successfully logged in"), HttpStatus.OK);
+    }
+
     @PostMapping(path = "/create")
     public ResponseEntity<ResponseMessageDto> createUser(@RequestBody CreateUserDto userDto){
         ResponseMessageDto message = userService.createUser(userDto);
