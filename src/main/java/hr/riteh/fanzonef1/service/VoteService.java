@@ -51,11 +51,6 @@ public class VoteService {
         return new ResponseMessageDto(true, "Voted successfully.");
     }
 
-    public void deleteVoteFromUser(User user) {
-        voteRepository.deleteByUser(user);
-    }
-    //TODO -> kako provjeriti i dodijeliti bodove za vote?
-
     public List<Vote> getVotesByRaceAndSeason(int race, int season){
         return voteRepository.findByRoundAndSeason(race, season);
     }

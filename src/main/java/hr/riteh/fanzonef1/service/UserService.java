@@ -9,7 +9,6 @@ import hr.riteh.fanzonef1.entity.User;
 import hr.riteh.fanzonef1.repository.UserRepository;
 import hr.riteh.fanzonef1.security.UserPrincipal;
 import hr.riteh.fanzonef1.util.DtoMapper;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
