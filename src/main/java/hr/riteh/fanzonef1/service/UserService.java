@@ -52,6 +52,9 @@ public class UserService implements UserDetailsService {
         if(getUserByUsername(userDto.getUsername()).isPresent()){
             return new ResponseMessageDto(false, "Username already exists!");
         }
+        if(getUserByEmail(userDto.getEmail()).isPresent()){
+            return new ResponseMessageDto(false, "E-mail already registered!");
+        }
         User user = new User(userDto.getUsername(),userDto.getEmail(),passwordEncoder.encode(userDto.getPassword()),userDto.getDateOfBirth());
         User savedUser = userRepository.save(user);
         if(savedUser != null){
@@ -59,6 +62,10 @@ public class UserService implements UserDetailsService {
         }else{
             return new ResponseMessageDto(false, "Failed saving user to database");
         }
+    }
+
+    private Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public ResponseMessageDto updateUser(UpdateUserDto userDto){
