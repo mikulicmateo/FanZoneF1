@@ -58,7 +58,6 @@ public class UserController {
 
     @DeleteMapping(path="/delete")
     public ResponseEntity<ResponseMessageDto> deleteUser(@RequestBody DeleteUserDto userDto, @RequestHeader(value = "Authorization") String authHeader){
-        //TODO riješit Table constraints -> briši voteove kod brisanja usera.
         ResponseMessageDto message = userService.deleteUser(userDto);
         if(message.isSuccess()){
             return new ResponseEntity<>(message, HttpStatus.OK);
