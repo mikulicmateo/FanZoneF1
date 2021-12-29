@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.nio.file.AccessDeniedException;
+import java.time.format.DateTimeParseException;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
@@ -25,6 +26,12 @@ public class ExceptionHandler {
     protected ResponseEntity<?> handleAccessDeniedException(Exception exception, WebRequest request){
         //401
         return new ResponseEntity<>(new ResponseMessageDto(false, "Access has been denied."), HttpStatus.UNAUTHORIZED);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<?> handleDateTimeParseException(){
+        //400
+        return new ResponseEntity<>(new ResponseMessageDto(false, "Date format unacceptable, try dd.MM.yyyy"), HttpStatus.BAD_REQUEST);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)

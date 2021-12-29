@@ -9,6 +9,7 @@ import hr.riteh.fanzonef1.entity.User;
 import hr.riteh.fanzonef1.repository.UserRepository;
 import hr.riteh.fanzonef1.security.UserPrincipal;
 import hr.riteh.fanzonef1.util.DtoMapper;
+import hr.riteh.fanzonef1.util.ValidationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,6 +50,9 @@ public class UserService implements UserDetailsService {
     }
 
     public ResponseMessageDto createUser(CreateUserDto userDto){
+        if(!ValidationHelper.checkDate(userDto.getDateOfBirth())){
+            return new ResponseMessageDto(false, "User must be 18 years old.");
+        }
         if(getUserByUsername(userDto.getUsername()).isPresent()){
             return new ResponseMessageDto(false, "Username already exists!");
         }
