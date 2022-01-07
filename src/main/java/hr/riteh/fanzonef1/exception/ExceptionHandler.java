@@ -31,7 +31,7 @@ public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<?> handleDateTimeParseException(){
         //400
-        return new ResponseEntity<>(new ResponseMessageDto(false, "Date format unacceptable, try dd.MM.yyyy"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ResponseMessageDto(false, "Date format unacceptable, try dd.MM.yyyy."), HttpStatus.BAD_REQUEST);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)

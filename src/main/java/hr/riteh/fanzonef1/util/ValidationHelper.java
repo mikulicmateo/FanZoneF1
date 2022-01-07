@@ -31,7 +31,7 @@ public class ValidationHelper {
     }
 
     public static boolean checkDate(String date) {
-        String pattern = "dd.MM.uuuu";
+        String pattern = "dd.MM.uuuu.";
         DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern(pattern);
         LocalDate dateOfBirth = LocalDate.parse(date, dtFormatter);
         LocalDate dateNow = LocalDate.now();
