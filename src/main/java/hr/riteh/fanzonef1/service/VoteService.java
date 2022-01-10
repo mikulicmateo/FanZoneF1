@@ -58,7 +58,7 @@ public class VoteService {
     }
 
     public CurrentRaceDto getCurrentRace(){
-        CurrentRaceDto currentRaceDto = new CurrentRaceDto(SchedulerHelper.getRace());
+        CurrentRaceDto currentRaceDto = new CurrentRaceDto(SchedulerHelper.getRace(), SchedulerHelper.getSeason());
         return currentRaceDto;
     }
 }

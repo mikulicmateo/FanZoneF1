@@ -7,4 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class CurrentRaceDto {
     private int currentRace;
+    private int currentSeason;
 }
