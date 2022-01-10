@@ -2,11 +2,13 @@ package hr.riteh.fanzonef1.service;
 
 import hr.riteh.fanzonef1.dto.request.CredentialsDto;
 import hr.riteh.fanzonef1.dto.request.VoteDto;
+import hr.riteh.fanzonef1.dto.response.CurrentRaceDto;
 import hr.riteh.fanzonef1.dto.response.ResponseMessageDto;
 import hr.riteh.fanzonef1.entity.User;
 import hr.riteh.fanzonef1.entity.Vote;
 import hr.riteh.fanzonef1.repository.VoteRepository;
 import hr.riteh.fanzonef1.util.Base64Helper;
+import hr.riteh.fanzonef1.util.SchedulerHelper;
 import hr.riteh.fanzonef1.util.ValidationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,5 +55,10 @@ public class VoteService {
 
     public List<Vote> getVotesByRaceAndSeason(int race, int season){
         return voteRepository.findByRoundAndSeason(race, season);
+    }
+
+    public CurrentRaceDto getCurrentRace(){
+        CurrentRaceDto currentRaceDto = new CurrentRaceDto(SchedulerHelper.getRace());
+        return currentRaceDto;
     }
 }

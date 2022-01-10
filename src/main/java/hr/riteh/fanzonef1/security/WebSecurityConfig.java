@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-                .antMatchers( "/user/create/**", "/user/standings/**").permitAll()
+                .antMatchers( "/user/create/**", "/user/standings/**", "/vote/currentrace").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .cors()
