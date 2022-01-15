@@ -1,6 +1,7 @@
 package hr.riteh.fanzonef1.service;
 
 import hr.riteh.fanzonef1.dto.request.CreateUserDto;
+import hr.riteh.fanzonef1.dto.request.CredentialsDto;
 import hr.riteh.fanzonef1.dto.request.DeleteUserDto;
 import hr.riteh.fanzonef1.dto.request.UpdateUserDto;
 import hr.riteh.fanzonef1.dto.response.ResponseMessageDto;
@@ -8,6 +9,7 @@ import hr.riteh.fanzonef1.dto.response.UserStandingsResponseDto;
 import hr.riteh.fanzonef1.entity.User;
 import hr.riteh.fanzonef1.repository.UserRepository;
 import hr.riteh.fanzonef1.security.UserPrincipal;
+import hr.riteh.fanzonef1.util.Base64Helper;
 import hr.riteh.fanzonef1.util.DtoMapper;
 import hr.riteh.fanzonef1.util.ValidationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +74,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
-    public ResponseMessageDto updateUser(UpdateUserDto userDto){
-        Optional<User> userOptional = getUserByUsername(userDto.getUsername());
+    public ResponseMessageDto updateUser(UpdateUserDto userDto, String authHeader){
+        Optional<User> userOptional = getUserByUsername(Base64Helper.getDecodedUsernameAndPassword(authHeader).getUsername());
         if(userOptional.isEmpty()){
             return new ResponseMessageDto(false, "User doesn't exist!");
         }
@@ -88,7 +90,7 @@ public class UserService implements UserDetailsService {
             }
             user.setEmail(userDto.getEmail());
         }
-        user.setPassword(userDto.getNewPassword());
+        user.setPassword(passwordEncoder.encode(userDto.getNewPassword()));
 
         if(userRepository.save(user) != null){
             return new ResponseMessageDto(true, "User has been updated!");
@@ -97,17 +99,15 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public ResponseMessageDto deleteUser(DeleteUserDto userDto) {
-        Optional<User> userOptional = getUserByUsername(userDto.getUsername());
+    public ResponseMessageDto deleteUser(DeleteUserDto userDto, String authHeader) {
+        CredentialsDto credentialsDto = Base64Helper.getDecodedUsernameAndPassword(authHeader);
+        Optional<User> userOptional = getUserByUsername(credentialsDto.getUsername());
         if(userOptional.isEmpty()){
             return new ResponseMessageDto(false, "User doesn't exist!");
         }
         User user = userOptional.get();
         if(!userDto.getEmail().equals(user.getEmail())){
             return new ResponseMessageDto(false, "Wrong email address!");
-        }
-        if(!userDto.getPassword().equals(user.getPassword())){
-            return new ResponseMessageDto(false,"Wrong password!");
         }
 
         userRepository.delete(user);

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "vote")
-@CrossOrigin
+@CrossOrigin(origins="http://localhost:3000")
 public class VoteController {
 
     private final VoteService voteService;

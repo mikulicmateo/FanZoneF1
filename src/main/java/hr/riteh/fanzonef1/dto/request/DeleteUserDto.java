@@ -8,7 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeleteUserDto {
-    private String username;
     private String email;
-    private String password;
 }

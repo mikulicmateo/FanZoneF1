@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "user")
-@CrossOrigin
+@CrossOrigin(origins="http://localhost:3000")
 public class UserController {
 
     private final UserService userService;
@@ -48,7 +48,7 @@ public class UserController {
 
     @PutMapping(path="/update")
     public ResponseEntity<ResponseMessageDto> updateUser(@RequestBody UpdateUserDto userDto, @RequestHeader(value = "Authorization") String authHeader){
-        ResponseMessageDto message = userService.updateUser(userDto);
+        ResponseMessageDto message = userService.updateUser(userDto, authHeader);
         if(message.isSuccess()){
             return new ResponseEntity<>(message, HttpStatus.OK);
         }else {
@@ -56,9 +56,9 @@ public class UserController {
         }
     }
 
-    @DeleteMapping(path="/delete")
+    @PostMapping(path="/delete")
     public ResponseEntity<ResponseMessageDto> deleteUser(@RequestBody DeleteUserDto userDto, @RequestHeader(value = "Authorization") String authHeader){
-        ResponseMessageDto message = userService.deleteUser(userDto);
+        ResponseMessageDto message = userService.deleteUser(userDto, authHeader);
         if(message.isSuccess()){
             return new ResponseEntity<>(message, HttpStatus.OK);
         }else {
